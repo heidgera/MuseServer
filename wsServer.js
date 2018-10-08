@@ -14,9 +14,10 @@ obtain([`${__dirname}/express.js`, 'ws', 'url', 'µ//events.js'], ({ httpServer,
       server: (muse.useSSL ? httpsServer : httpServer), });
     var webSock = null;
 
-    wsServer.broadcast = function (data) {
+    wsServer.broadcast = function (key, data) {
       wsServer.clients.forEach(function each(client) {
-        client.send(data);
+        var obj = { [key]: data };
+        client.send(JSON.stringify(obj));
       });
     };
 
@@ -83,13 +84,25 @@ obtain([`${__dirname}/express.js`, 'ws', 'url', 'µ//events.js'], ({ httpServer,
         req: req,
       });
 
+      ws.sendObject = (obj)=>{
+        ws.send(JSON.stringify(obj));
+      }
+
+      ws.sendPacket = (key, data)=>{
+        var obj = { [key]: data };
+        ws.send(JSON.stringify(obj));
+      }
+
       ws.on('message', function (message) {
         var data = JSON.parse(message);
         for (var key in data) {
           if (data.hasOwnProperty(key)) {
-            data[key].from = ws.id;
-            manager.emit(key, data[key]);
-            ws.eventManager.emit(key, data[key]);
+            var dat = {
+              details: {from: ws},
+              data: data[key],
+            }
+            manager.emit(key, dat);
+            ws.eventManager.emit(key, dat);
           }
         }
       });

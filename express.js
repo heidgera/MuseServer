@@ -8,9 +8,10 @@ var obtains = [
   'express-session',
   'https',
   'http',
+  'path'
 ];
 
-obtain(obtains, (express, bodyParser, fs, fileUpload, session, https, http)=> {
+obtain(obtains, (express, bodyParser, fs, fileUpload, session, https, http, path)=> {
   if (!window.expressServer) {
     window.expressServer = {};
     window.expressServer.sessionParser = session({
@@ -35,8 +36,9 @@ obtain(obtains, (express, bodyParser, fs, fileUpload, session, https, http)=> {
 
     fileServer.set('view engine', 'pug');
 
-    fileServer.use('', express.static('./client'));
-    fileServer.use('/common', express.static('./common'));
+
+    fileServer.use('', express.static(path.join(__dirname, '../../../client')));
+    fileServer.use('/common', express.static(path.join(__dirname, '../../../../common')));
 
     fileServer.use(router);
 

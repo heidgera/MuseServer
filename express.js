@@ -38,7 +38,7 @@ obtain(obtains, (express, bodyParser, fs, fileUpload, session, https, http, path
 
 
     fileServer.use('', express.static(path.join(__dirname, '../../../client')));
-    fileServer.use('/common', express.static(path.join(__dirname, '../../../../common')));
+    fileServer.use('/common', express.static(path.join(__dirname, '../../../common')));
 
     fileServer.use(router);
 
